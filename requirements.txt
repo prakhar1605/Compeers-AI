@@ -6,3 +6,5 @@ lxml
 openpyxl
 pdfplumber
 python-dateutil
+tldextract
+
