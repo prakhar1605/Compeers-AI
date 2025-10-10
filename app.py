@@ -272,7 +272,7 @@ elif page == "Search Interest":
 #  PAGE 4: COMPETITOR LANDSCAPE (MOVI)
 # =========================================================
 elif page == "Competitor Landscape":
-    st.subheader("🏆 Competitor Landscape (MOVI Framework)")
+    st.subheader(" Competitor Landscape (MOVI Framework)")
 
     st.markdown("Upload competitor data or manually input competitors for analysis.")
 
