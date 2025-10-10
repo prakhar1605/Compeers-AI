@@ -91,7 +91,7 @@ if page == "Source Discovery":
         return match.group(0) if match else ""
 
     if st.button("2. Run Auto-Discovery and Classify Sources", type="primary", use_container_width=True):
-        if not GOOGLE_API_KEY or not GOOGLE_CSE_ID:
+        if not API_KEY or not CSE_ID:
             st.error("API KEYS NOT FOUND. Please check your GOOGLE_API_KEY and GOOGLE_CSE_ID.")
             st.session_state['short_df'] = None
         elif not cat.strip():
