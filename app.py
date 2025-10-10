@@ -324,15 +324,25 @@ elif page == "Search Interest":
 # =========================================================
 #  PAGE 4: COMPETITOR LANDSCAPE (MOVI)
 # =========================================================
+# === Competitor Landscape (configurable rubric) ===
 elif page == "Competitor Landscape":
-    st.subheader("🏆 Competitor Landscape (MOVI Framework)")
+    st.subheader("🏆 Competitor Landscape")
 
-    st.markdown("Upload competitor data (CSV/XLSX) or enter names manually.")
+    st.markdown("Upload competitor data (CSV/XLSX) or enter names manually. Choose rubric to apply (MOVI is a demo).")
 
     uploaded_file = st.file_uploader("Upload Competitor Data (CSV/XLSX)", type=["csv","xlsx"])
     competitors_text = st.text_area("Or Enter Competitor Names (comma-separated)", placeholder="e.g., HUL, P&G, Dabur")
 
+    # Rubric selection (user can pick preset or custom)
+    rubric = st.selectbox("Choose rubric", ["None (show only uploaded columns)", "MOVI (Market/Offering/Value/Innovation)", "SWOT (Strength/Weakness/Opportunity/Threat)", "Custom (enter columns)"])
+
+    custom_cols = []
+    if rubric.startswith("Custom"):
+        custom_in = st.text_input("Enter custom column names (comma-separated)", placeholder="e.g., Distribution, Price Corridor, Claims")
+        custom_cols = [c.strip() for c in custom_in.split(",") if c.strip()]
+
     if st.button("Run Competitor Analysis", use_container_width=True):
+        # load data from upload or text
         if uploaded_file:
             try:
                 if uploaded_file.name.lower().endswith(".csv"):
@@ -352,25 +362,45 @@ elif page == "Competitor Landscape":
             st.warning("No competitor data found. Upload a file or enter names.")
         else:
             st.success("✅ Competitor Data Loaded")
-            # Normalize column name if needed
+            # Ensure a Competitor column exists
             if "Competitor" not in df_comp.columns:
                 df_comp = df_comp.rename(columns={df_comp.columns[0]: "Competitor"})[["Competitor"]]
 
-            # Add MOVI dummy framework coherently for any length
-            n = len(df_comp)
-            market_share_vals = (["High", "Medium", "Low"] * ((n // 3) + 1))[:n]
-            offering_vals = (["Premium", "Mass", "Niche"] * ((n // 3) + 1))[:n]
-            value_prop_vals = (["Quality", "Price", "Reach"] * ((n // 3) + 1))[:n]
-            innovation_vals = (["Strong", "Moderate", "Weak"] * ((n // 3) + 1))[:n]
+            # If rubric = None, just show uploaded data
+            if rubric == "None (show only uploaded columns)":
+                st.subheader("📋 Uploaded Competitor Table")
+                st.dataframe(df_comp, use_container_width=True)
+            else:
+                # Decide columns for chosen rubric
+                if rubric == "MOVI (Market/Offering/Value/Innovation)":
+                    cols = ["Market Share", "Offering", "Value Proposition", "Innovation"]
+                    demo_values = {
+                        "Market Share": ["High", "Medium", "Low"],
+                        "Offering": ["Premium", "Mass", "Niche"],
+                        "Value Proposition": ["Quality", "Price", "Reach"],
+                        "Innovation": ["Strong", "Moderate", "Weak"]
+                    }
+                elif rubric == "SWOT (Strength/Weakness/Opportunity/Threat)":
+                    cols = ["Strength", "Weakness", "Opportunity", "Threat"]
+                    demo_values = {
+                        "Strength": ["Brand", "Distribution", "R&D"],
+                        "Weakness": ["Price", "Portfolio gap", "Quality perception"],
+                        "Opportunity": ["Channel expansion", "New segment", "Premiumization"],
+                        "Threat": ["Regulation", "New entrants", "Raw material cost"]
+                    }
+                else:  # Custom
+                    cols = custom_cols if custom_cols else ["Metric1", "Metric2"]
+                    # set simple demo values repeated
+                    demo_values = {c: [f"{c} A", f"{c} B", f"{c} C"] for c in cols}
 
-            df_comp["Market Share"] = market_share_vals
-            df_comp["Offering"] = offering_vals
-            df_comp["Value Proposition"] = value_prop_vals
-            df_comp["Innovation"] = innovation_vals
+                # Build rubric columns with demo values repeated to match df length
+                n = len(df_comp)
+                for col in cols:
+                    values_pool = demo_values.get(col, ["Yes", "No", "Maybe"])
+                    df_comp[col] = (values_pool * ((n // len(values_pool)) + 1))[:n]
 
-            st.subheader("📊 MOVI Analysis Table")
-            st.dataframe(df_comp, use_container_width=True)
+                st.subheader(f"📊 Competitor Table — {rubric.split()[0]}")
+                st.dataframe(df_comp, use_container_width=True)
 
-            st.download_button("⬇️ Download Competitor MOVI CSV",
-                               df_comp.to_csv(index=False).encode("utf-8"),
-                               file_name="competitor_movi.csv")
+            # allow download
+            st.download_button("⬇️ Download Competitor CSV", df_comp.to_csv(index=False).encode("utf-8"), file_name="competitor_analysis.csv")
