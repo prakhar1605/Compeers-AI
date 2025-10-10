@@ -1,5 +1,8 @@
-streamlit==1.24.1
-pandas==2.0.3
-google-api-python-client==2.97.0
-tldextract==3.4.4
-Pillow==9.2.0
+streamlit
+pandas
+requests
+beautifulsoup4
+lxml
+openpyxl
+pdfplumber
+python-dateutil
