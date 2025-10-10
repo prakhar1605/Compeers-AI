@@ -265,7 +265,7 @@ elif page == "Search Interest":
 #  PAGE 4: COMPETITOR LANDSCAPE
 # =========================================================
 elif page == "Competitor Landscape":
-    st.subheader("🏆 Competitor Landscape")
+    st.subheader(" Competitor Landscape")
     uploaded_file = st.file_uploader("Upload Competitor Data (CSV/XLSX)", type=["csv","xlsx"])
     competitors_text = st.text_area("Or Enter Competitor Names (comma-separated)", placeholder="e.g., HUL, P&G, Dabur")
     rubric = st.selectbox("Choose rubric", ["None (show only uploaded columns)", "MOVI (Market/Offering/Value/Innovation)", "SWOT (Strength/Weakness/Opportunity/Threat)", "Custom (enter columns)"])
