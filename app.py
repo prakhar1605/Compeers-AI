@@ -12,8 +12,8 @@ from pytrends.request import TrendReq  # <-- Google Trends
 from compeers_ai.harvester import run_harvest
 
 # ---------------- API KEYS ----------------
-GOOGLE_API_KEY = "AIzaSyAQwqw4urV935hjNLQYrYLF42zJJijJLEw"
-GOOGLE_CSE_ID = "b4f5bdce37c7c4e2f"
+API_KEY = st.secrets["GOOGLE_API_KEY"]
+CSE_ID = st.secrets["GOOGLE_CSE_ID"]
 
 # --- STREAMLIT CONFIG ---
 st.set_page_config(page_title="COMPEER'S AI", layout="wide")
