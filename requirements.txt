@@ -7,4 +7,5 @@ openpyxl
 pdfplumber
 python-dateutil
 tldextract
-
+google-api-python-client
+pytrends
